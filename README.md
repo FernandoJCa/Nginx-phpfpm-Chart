@@ -10,7 +10,7 @@ This repository contains the necessary files to set up a web server using Nginx 
 ## TODO
  - [ ] Improve values.yaml
  - [ ] Improve templates
-
+ - [ ] Improve Readme
 
 ## Contributing
 
