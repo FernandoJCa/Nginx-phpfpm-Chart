@@ -57,7 +57,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: test.ccsolutions.dev
+    - host: example.com
       paths:
         - path: /
           pathType: Prefix
