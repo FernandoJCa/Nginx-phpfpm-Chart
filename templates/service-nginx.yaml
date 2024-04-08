@@ -11,4 +11,3 @@ spec:
       targetPort: {{ .Values.service.targetPort }}
   selector:
     {{- include "nginx-php.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/component: nginx
