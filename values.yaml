@@ -7,8 +7,16 @@ replicaCount: 1
 nginx:
   repository: nginx
   pullPolicy: IfNotPresent
+  port: 8080
   # Overrides the image tag whose default is the chart appVersion.
   tag: "alpine"
+
+  volumeMounts:
+    - name: shared-data
+      mountPath: /var/www/html
+    - name: nginx-config
+      mountPath: /etc/nginx/nginx.conf
+      subPath: nginx.conf
 
 php:
   repository: php
@@ -16,6 +24,13 @@ php:
   port: 9000
   # Overrides the image tag whose default is the chart appVersion.
   tag: "8.2-fpm"
+
+  volumeMounts:
+    - name: shared-data
+      mountPath: /var/www/html
+    - name: php-index
+      mountPath: /var/www/html/index.php
+      subPath: index.php  
 
 imagePullSecrets: []
 nameOverride: ""
@@ -48,7 +63,8 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 8080
+  port: 80
+  targetPort: 8080
 
 ingress:
   enabled: true
@@ -98,9 +114,9 @@ autoscaling:
 volumes:
  - name: shared-data
    emptyDir: {}
-
-
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: 
- - name: shared-data
-   mountPath: /var/www/
+ - name: nginx-config
+   configMap:
+    name: nginx-php-configmap
+ - name: php-index
+   configMap:
+    name: php-configmap
