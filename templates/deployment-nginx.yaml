@@ -36,13 +36,11 @@ spec:
         - name: nginx
           image: "{{ .Values.nginx.repository }}:{{ .Values.nginx.tag | default .Chart.AppVersion }}"
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - containerPort: {{ .Values.nginx.port }}
+          {{- with .Values.nginx.volumeMounts }}
           volumeMounts:
-            - name: shared-data
-              mountPath: /var/www/html
-            - name: nginx-config
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
       initContainers:
         - name: phpfpm
           image: "{{ .Values.php.repository }}:{{ .Values.php.tag | default .Chart.AppVersion }}"
@@ -50,18 +48,11 @@ spec:
           ports:
              - name: phpfpm
                containerPort: {{ .Values.php.port }}
+          {{- with .Values.php.volumeMounts }}
           volumeMounts:
-            - name: shared-data
-              mountPath: /var/www/html
-            - name: php-index
-              mountPath: /var/www/html/index.php
-              subPath: index.php
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes}}
       volumes:
-        - name: shared-data
-          emptyDir: {}
-        - name: nginx-config
-          configMap:
-            name: nginx-php-configmap
-        - name: php-index
-          configMap:
-            name: php-configmap
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
